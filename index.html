@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIT Pune Dashboard</title>
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+        
+        /* Landing Page Styles */
+        #landing-page {
+            background-image: url('Screenshot_19-5-2026_112731_d1r3r36pquuygt.cloudfront.net.jpeg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        
+        .header {
+            background-color: rgba(30, 30, 30, 0.85);
+            color: white;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo-text { font-size: 14px; font-weight: bold; letter-spacing: 0.5px; }
+        .naac { color: white; font-weight: bold; font-size: 18px; border: 1px solid white; padding: 2px 5px; }
+        .naac span { background: red; color: white; padding: 2px 4px; }
+        
+        .nav-links { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; font-size: 13px; }
+        .nav-top, .nav-bottom { display: flex; gap: 15px; }
+        .nav-links a { color: white; text-decoration: none; }
+        .nav-links a:hover { text-decoration: underline; }
+        
+        .hero-text {
+            position: absolute;
+            top: 35%;
+            left: 5%;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 55px;
+            font-weight: 800;
+            line-height: 1.1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .hero-text small { font-size: 30px; display: block; font-weight: normal; color: rgba(255, 255, 255, 0.8); }
+        
+        /* Side Tabs */
+        .side-tabs {
+            position: absolute;
+            right: 0;
+            top: 20%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .tab {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            padding: 20px 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px 0 0 5px;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .tab:hover { transform: scale(1.05); }
+        .tab-enquire { background-color: #0033a0; color: white; }
+        .tab-notice { background-color: white; color: #0033a0; }
+        
+        /* Modal Styles */
+        #login-modal {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 30px; border-radius: 8px; width: 300px;
+            text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-content input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .modal-content button { width: 90%; padding: 10px; background: #0033a0; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .modal-content button:hover { background: #002277; }
+        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 20px; font-weight: bold; }
+        
+        /* Dashboard Styles */
+        #dashboard { display: none; height: 100vh; }
+        
+        .sidebar {
+            width: 300px; background: #1e1e1e; color: white; overflow-y: auto; padding: 20px 0; height: 100vh;
+        }
+        .sidebar h3 { text-align: center; margin-bottom: 20px; color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .file-link {
+            display: block; padding: 12px 20px; color: #ccc; text-decoration: none; cursor: pointer; border-bottom: 1px solid #333; font-size: 14px;
+        }
+        .file-link:hover, .file-link.active { background: #333; color: white; border-left: 4px solid #0033a0; padding-left: 16px; }
+        
+        .main-content {
+            flex-grow: 1; background: #f4f4f4; padding: 30px; overflow-y: auto; position: relative; height: 100vh; box-sizing: border-box;
+        }
+        .main-content h2 { margin-top: 0; color: #333; }
+        
+        .code-container {
+            background: #2d2d2d; padding: 20px; border-radius: 8px; position: relative; height: calc(100% - 60px); box-sizing: border-box; overflow: auto;
+        }
+        .code-container pre { color: #f8f8f2; margin: 0; font-family: 'Consolas', monospace; font-size: 14px; white-space: pre-wrap; }
+        
+        .copy-btn {
+            position: absolute; top: 15px; right: 15px; background: #0033a0; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;
+        }
+        .copy-btn:hover { background: #002277; }
+    </style>
+</head>
+<body>
+
+    <!-- LANDING PAGE -->
+    <div id="landing-page">
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-text">VISHWAKARMA INSTITUTE OF TECHNOLOGY, PUNE<br><small style="font-weight: normal; font-size: 10px;">(An Autonomous Institute Affiliated to Savitribai Phule Pune University)</small></div>
+                <div class="naac">NAAC GRADE <span>A++</span></div>
+            </div>
+            <div class="nav-links">
+                <div class="nav-top">
+                    <a href="#">About</a> | <a href="#">IQAC</a> | <a href="#">Rankings</a> | <a href="#">NIRF</a> | <a href="#">Corporate Relations</a> | <a href="#">Projects</a> | <a href="#">Alumni</a> | <a href="#">Online Services</a> | <a href="#">Career</a>
+                </div>
+                <div class="nav-bottom">
+                    <a href="#">Academics</a> | <a href="#">Admissions</a> | <a href="#">Placements</a> | <a href="#">Research</a> | <a href="#">Examinations</a> | <a href="#">International Relations</a> | <a href="#">Announcements</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-text">
+            <small>WELCOME TO</small>
+            VISHWAKARMA<br>INSTITUTE OF<br>TECHNOLOGY
+        </div>
+        
+        <div class="side-tabs">
+            <div class="tab tab-enquire">Enquire Now</div>
+            <div class="tab tab-notice" onclick="openModal()">Notice Board</div>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="login-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 style="color: #333; margin-top: 0;">Notice Board</h2>
+            <p style="color: #666; font-size: 13px;">Please login to access the codes.</p>
+            <input type="text" id="userid" placeholder="Login ID" />
+            <input type="password" id="password" placeholder="Password" />
+            <button onclick="login()">Login</button>
+            <p id="error-msg" style="color: red; font-size: 12px; display: none;">Invalid Login ID or Password</p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+        <div class="sidebar">
+            <h3>Assignments Codes</h3>
+            <div id="file-list"></div>
+        </div>
+        <div class="main-content">
+            <h2 id="current-file-title">Select an Assignment</h2>
+            <div class="code-container" id="code-box" style="display: none;">
+                <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+                <pre><code id="code-display"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const filesData = [{"name": "bank+dead.cpp", "content": "#include <iostream>\nusing namespace std;\n\n#define MAX 10\n\nint n, m; // n = processes, m = resources\n\n// Banker\u2019s Algorithm\nvoid bankersAlgorithm(int alloc[10][10], int max[MAX][MAX], int avail[MAX]) {\n    int need[MAX][MAX], finish[MAX] = {0}, safeSeq[MAX];\n    int work[MAX];\n\n    // Calculate Need matrix\n    for (int i = 0; i < n; i++) {\n        for (int j = 0; j < m; j++) {\n            need[i][j] = max[i][j] - alloc[i][j];\n        }\n    }\n\n    // Initialize work = available\n    for (int i = 0; i < m; i++)\n        work[i] = avail[i];\n\n    int count = 0;\n\n    while (count < n) {\n        int found = 0;\n\n        for (int i = 0; i < n; i++) {\n            if (!finish[i]) {\n                int j;\n                for (j = 0; j < m; j++) {\n                    if (need[i][j] > work[j])\n                        break;\n                }\n\n                if (j == m) {\n                    for (int k = 0; k < m; k++)\n                        work[k] += alloc[i][k];\n\n                    safeSeq[count++] = i;\n                    finish[i] = 1;\n                    found = 1;\n                }\n            }\n        }\n\n        if (!found) {\n            cout << \"\\nSystem is NOT in safe state (Deadlock possible)\\n\";\n            return;\n        }\n    }\n\n    cout << \"\\nSystem is in SAFE state\\nSafe sequence: \";\n    for (int i = 0; i < n; i++)\n        cout << \"P\" << safeSeq[i] << \" \";\n    cout << endl;\n}\n\n// Deadlock Detection Algorithm\nvoid deadlockDetection(int alloc[MAX][MAX], int request[MAX][MAX], int avail[MAX]) {\n    int work[MAX], finish[MAX] = {0};\n\n    for (int i = 0; i < m; i++)\n        work[i] = avail[i];\n\n    while (true) {\n        int found = 0;\n\n        for (int i = 0; i < n; i++) {\n            if (!finish[i]) {\n                int j;\n                for (j = 0; j < m; j++) {\n                    if (request[i][j] > work[j])\n                        break;\n                }\n\n                if (j == m) {\n                    for (int k = 0; k < m; k++)\n                        work[k] += alloc[i][k];\n\n                    finish[i] = 1;\n                    found = 1;\n                }\n            }\n        }\n\n        if (!found)\n            break;\n    }\n\n    int deadlock = 0;\n    for (int i = 0; i < n; i++) {\n        if (!finish[i]) {\n            cout << \"Process P\" << i << \" is in deadlock\\n\";\n            deadlock = 1;\n        }\n    }\n\n    if (!deadlock)\n        cout << \"No deadlock detected\\n\";\n}\n\nint main() {\n    int alloc[MAX][MAX], max[MAX][MAX], avail[MAX], request[MAX][MAX];\n\n    cout << \"Enter number of processes: \";\n    cin >> n;\n\n    cout << \"Enter number of resources: \";\n    cin >> m;\n\n    cout << \"\\nEnter Allocation Matrix:\\n\";\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            cin >> alloc[i][j];\n\n    cout << \"\\nEnter Max Matrix:\\n\";\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            cin >> max[i][j];\n\n    cout << \"\\nEnter Available Resources:\\n\";\n    for (int i = 0; i < m; i++)\n        cin >> avail[i];\n\n    bankersAlgorithm(alloc, max, avail);\n\n    cout << \"\\nEnter Request Matrix (for Deadlock Detection):\\n\";\n    for (int i = 0; i < n; i++)\n        for (int j = 0; j < m; j++)\n            cin >> request[i][j];\n\n    deadlockDetection(alloc, request, avail);\n\n    return 0;\n}"}, {"name": "buddy_system_ass10.cpp", "content": "#include <iostream>\n#include <vector>\nusing namespace std;\n\n// Function to find next power of 2\nint nextPowerOf2(int n)\n{\n    int p = 1;\n\n    while (p < n)\n        p *= 2;\n\n    return p;\n}\n\nint main()\n{\n    int memorySize, n;\n\n    cout << \"Enter Total Memory Size (KB): \";\n    cin >> memorySize;\n\n    cout << \"Enter Number of Processes: \";\n    cin >> n;\n\n    vector<int> process(n);\n\n    for (int i = 0; i < n; i++)\n    {\n        cout << \"Enter memory required for Process P\" << i + 1 << \": \";\n        cin >> process[i];\n    }\n\n    int remainingMemory = memorySize;\n\n    cout << \"\\n========== Buddy System Allocation ==========\\n\";\n\n    for (int i = 0; i < n; i++)\n    {\n        cout << \"\\nProcess P\" << i + 1 << \" requesting \"\n             << process[i] << \" KB\\n\";\n\n        int requiredBlock = nextPowerOf2(process[i]);\n\n        cout << \"Nearest Power of 2 Block: \"\n             << requiredBlock << \" KB\\n\";\n\n        if (requiredBlock > remainingMemory)\n        {\n            cout << \"Allocation FAILED (Insufficient Memory)\\n\";\n            continue;\n        }\n\n        // Show splitting process\n        int currentBlock = memorySize;\n\n        cout << \"Splitting Process:\\n\";\n\n        while (currentBlock / 2 >= requiredBlock)\n        {\n            cout << currentBlock\n                 << \" KB -> \"\n                 << currentBlock / 2\n                 << \" KB + \"\n                 << currentBlock / 2\n                 << \" KB\\n\";\n\n            currentBlock /= 2;\n        }\n\n        cout << \"Allocated Block: \"\n             << currentBlock << \" KB\\n\";\n\n        cout << \"Internal Fragmentation: \"\n             << currentBlock - process[i]\n             << \" KB\\n\";\n\n        remainingMemory -= currentBlock;\n\n        cout << \"Remaining Memory: \"\n             << remainingMemory\n             << \" KB\\n\";\n    }\n\n    cout << \"\\n========== Allocation Finished ==========\\n\";\n\n    return 0;\n}"}, {"name": "dining_philosopher_problem_ass5.cpp", "content": "#include <iostream>\n#include <thread>\n#include <mutex>\n#include <chrono>\nusing namespace std;\nint N, cycles;\nmutex *forks;\nmutex printMutex;\n\nvoid think(int id)\n{\n    {\n        lock_guard<mutex> lock(printMutex);\n        cout << \"Philosopher \" << id << \" is thinking\\n\";\n    }\n    this_thread::sleep_for(chrono::seconds(1));\n}\n\nvoid eat(int id)\n{\n    {\n        lock_guard<mutex> lock(printMutex);\n        cout << \"Philosopher \" << id << \" is eating\\n\";\n    }\n    this_thread::sleep_for(chrono::seconds(1));\n}\n\nvoid philosopher(int id)\n{\n    for (int i = 0; i < cycles; i++)\n    {\n        think(id);\n\n        if (id % 2 == 0)\n        {\n            forks[id].lock();\n            forks[(id + 1) % N].lock();\n        }\n        else\n        {\n            forks[(id + 1) % N].lock();\n            forks[id].lock();\n        }\n\n        eat(id);\n\n        forks[id].unlock();\n        forks[(id + 1) % N].unlock();\n    }\n}\n\nint main()\n{\n    cout << \"Enter number of philosophers: \";\n    cin >> N;\n\n    cout << \"Enter number of cycles: \";\n    cin >> cycles;\n\n    forks = new mutex[N];\n    thread *philosophers = new thread[N]; // \u2705 FIXED\n\n    for (int i = 0; i < N; i++)\n    {\n        philosophers[i] = thread(philosopher, i);\n    }\n\n    for (int i = 0; i < N; i++)\n    {\n        philosophers[i].join();\n    }\n\n    delete[] forks;\n    delete[] philosophers; // cleanup\n\n    return 0;\n}"}, {"name": "disk_scheduling_algo_ass13.cpp", "content": "#include <iostream>\n#include <vector>\n#include <algorithm>\n#include <cmath>\nusing namespace std;\n\n// FCFS\nvoid FCFS(vector<int> req, int head) {\n    int seek = 0;\n    for (int i = 0; i < req.size(); i++) {\n        seek += abs(req[i] - head);\n        head = req[i];\n    }\n    cout << \"FCFS Seek Time: \" << seek << endl;\n}\n\n// SSTF\nvoid SSTF(vector<int> req, int head) {\n    int n = req.size(), seek = 0;\n    vector<bool> visited(n, false);\n\n    for (int i = 0; i < n; i++) {\n        int minDist = 1e9, index = -1;\n\n        for (int j = 0; j < n; j++) {\n            if (!visited[j]) {\n                int dist = abs(req[j] - head);\n                if (dist < minDist) {\n                    minDist = dist;\n                    index = j;\n                }\n            }\n        }\n\n        visited[index] = true;\n        seek += minDist;\n        head = req[index];\n    }\n\n    cout << \"SSTF Seek Time: \" << seek << endl;\n}\n\n// SCAN\nvoid SCAN(vector<int> req, int head, int disk_size) {\n    int seek = 0;\n    vector<int> left, right;\n\n    for (int i : req) {\n        if (i < head) left.push_back(i);\n        else right.push_back(i);\n    }\n\n    sort(left.begin(), left.end());\n    sort(right.begin(), right.end());\n\n    for (int i : right) {\n        seek += abs(i - head);\n        head = i;\n    }\n\n    seek += abs((disk_size - 1) - head);\n    head = disk_size - 1;\n\n    for (int i = left.size() - 1; i >= 0; i--) {\n        seek += abs(left[i] - head);\n        head = left[i];\n    }\n\n    cout << \"SCAN Seek Time: \" << seek << endl;\n}\n\n// C-SCAN\nvoid CSCAN(vector<int> req, int head, int disk_size) {\n    int seek = 0;\n    vector<int> left, right;\n\n    for (int i : req) {\n        if (i < head) left.push_back(i);\n        else right.push_back(i);\n    }\n\n    sort(left.begin(), left.end());\n    sort(right.begin(), right.end());\n\n    for (int i : right) {\n        seek += abs(i - head);\n        head = i;\n    }\n\n    seek += abs((disk_size - 1) - head);\n    head = 0;\n    seek += (disk_size - 1);\n\n    for (int i : left) {\n        seek += abs(i - head);\n        head = i;\n    }\n\n    cout << \"C-SCAN Seek Time: \" << seek << endl;\n}\n\nint main() {\n    int n, head, disk_size;\n\n    cout << \"Enter number of requests: \";\n    cin >> n;\n\n    vector<int> req(n);\n    cout << \"Enter request queue:\\n\";\n    for (int i = 0; i < n; i++)\n        cin >> req[i];\n\n    cout << \"Enter initial head position: \";\n    cin >> head;\n\n    cout << \"Enter disk size: \";\n    cin >> disk_size;\n\n    FCFS(req, head);\n    SSTF(req, head);\n    SCAN(req, head, disk_size);\n    CSCAN(req, head, disk_size);\n\n    return 0;\n}\n"}, {"name": "page_replacement_algo_ass11.cpp", "content": "#include <iostream>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\n\n// FIFO\nvoid fifo(vector<int> pages, int frames) {\n    queue<int> q;\n    vector<int> mem;\n    int faults = 0;\n\n    for (int p : pages) {\n        if (find(mem.begin(), mem.end(), p) == mem.end()) {\n            faults++;\n            if (mem.size() < frames) {\n                mem.push_back(p);\n                q.push(p);\n            } else {\n                int val = q.front(); q.pop();\n                mem.erase(find(mem.begin(), mem.end(), val));\n                mem.push_back(p);\n                q.push(p);\n            }\n        }\n    }\n\n    int hits = pages.size() - faults;\n    float ratio = (float)hits / pages.size();\n\n    cout << \"FIFO\\t\\t\" << faults << \"\\t\" << hits << \"\\t\" << ratio << endl;\n}\n\n// LRU\nvoid lru(vector<int> pages, int frames) {\n    vector<int> mem;\n    vector<int> recent;\n    int faults = 0;\n\n    for (int i = 0; i < pages.size(); i++) {\n        int p = pages[i];\n        auto it = find(mem.begin(), mem.end(), p);\n\n        if (it == mem.end()) {\n            faults++;\n            if (mem.size() < frames) {\n                mem.push_back(p);\n                recent.push_back(i);\n            } else {\n                int lru_index = 0;\n                for (int j = 1; j < frames; j++) {\n                    if (recent[j] < recent[lru_index])\n                        lru_index = j;\n                }\n                mem[lru_index] = p;\n                recent[lru_index] = i;\n            }\n        } else {\n            int idx = it - mem.begin();\n            recent[idx] = i;\n        }\n    }\n\n    int hits = pages.size() - faults;\n    float ratio = (float)hits / pages.size();\n\n    cout << \"LRU\\t\\t\" << faults << \"\\t\" << hits << \"\\t\" << ratio << endl;\n}\n\n// Optimal\nvoid optimal(vector<int> pages, int frames) {\n    vector<int> mem;\n    int faults = 0;\n\n    for (int i = 0; i < pages.size(); i++) {\n        int p = pages[i];\n\n        if (find(mem.begin(), mem.end(), p) == mem.end()) {\n            faults++;\n            if (mem.size() < frames) {\n                mem.push_back(p);\n            } else {\n                int farthest = -1, index = -1;\n\n                for (int j = 0; j < frames; j++) {\n                    int k;\n                    for (k = i + 1; k < pages.size(); k++) {\n                        if (mem[j] == pages[k]) break;\n                    }\n                    if (k > farthest) {\n                        farthest = k;\n                        index = j;\n                    }\n                }\n                mem[index] = p;\n            }\n        }\n    }\n\n    int hits = pages.size() - faults;\n    float ratio = (float)hits / pages.size();\n\n    cout << \"Optimal\\t\\t\" << faults << \"\\t\" << hits << \"\\t\" << ratio << endl;\n}\n\nint main() {\n    int n, frames;\n\n    cout << \"Enter number of pages: \";\n    cin >> n;\n\n    vector<int> pages(n);\n\n    cout << \"Enter reference string (space separated):\\n\";\n    for (int i = 0; i < n; i++) {\n        cin >> pages[i];\n    }\n\n    cout << \"Enter number of frames: \";\n    cin >> frames;\n\n    // Display reference string properly\n    cout << \"\\nReference String: \";\n    for (int p : pages) cout << p << \" \";\n    cout << endl;\n\n    cout << \"\\nAlgorithm\\tFaults\\tHits\\tHit Ratio\\n\";\n\n    fifo(pages, frames);\n    lru(pages, frames);\n    optimal(pages, frames);\n\n    return 0;\n}"}, {"name": "placement_strategies_ass9.cpp", "content": "#include<iostream>\n#include<vector>\nusing namespace std;\n\nvoid firstFit(vector<int> blockSize, int m, vector<int> processSize, int n) {\n    vector<int> allocation(n, -1);\n\n    for(int i=0;i<n;i++) {\n        for(int j=0;j<m;j++) {\n            if(blockSize[j] >= processSize[i]) {\n                allocation[i] = j;\n                blockSize[j] -= processSize[i];\n                break;\n            }\n        }\n    }\n\n    cout << \"\\nFirst Fit:\\n\";\n    for(int i=0;i<n;i++) {\n        if(allocation[i] != -1)\n            cout << \"Process \" << i << \" -> Block \" << allocation[i] << endl;\n        else\n            cout << \"Process \" << i << \" -> Not Allocated\\n\";\n    }\n}\n\n\nvoid bestFit(vector<int> blockSize, int m, vector<int> processSize, int n) {\n    vector<int> allocation(n, -1);\n\n    for(int i=0;i<n;i++) {\n        int bestIdx = -1;\n        for(int j=0;j<m;j++) {\n            if(blockSize[j] >= processSize[i]) {\n                if(bestIdx == -1 || blockSize[j] < blockSize[bestIdx])\n                    bestIdx = j;\n            }\n        }\n\n        if(bestIdx != -1) {\n            allocation[i] = bestIdx;\n            blockSize[bestIdx] -= processSize[i];\n        }\n    }\n\n    cout << \"\\nBest Fit:\\n\";\n    for(int i=0;i<n;i++) {\n        if(allocation[i] != -1)\n            cout << \"Process \" << i << \" -> Block \" << allocation[i] << endl;\n        else\n            cout << \"Process \" << i << \" -> Not Allocated\\n\";\n    }\n}\n\nvoid worstFit(vector<int> blockSize, int m, vector<int> processSize, int n) {\n    vector<int> allocation(n, -1);\n\n    for(int i=0;i<n;i++) {\n        int worstIdx = -1;\n        for(int j=0;j<m;j++) {\n            if(blockSize[j] >= processSize[i]) {\n                if(worstIdx == -1 || blockSize[j] > blockSize[worstIdx])\n                    worstIdx = j;\n            }\n        }\n\n        if(worstIdx != -1) {\n            allocation[i] = worstIdx;\n            blockSize[worstIdx] -= processSize[i];\n        }\n    }\n\n    cout << \"\\nWorst Fit:\\n\";\n    for(int i=0;i<n;i++) {\n        if(allocation[i] != -1)\n            cout << \"Process \" << i << \" -> Block \" << allocation[i] << endl;\n        else\n            cout << \"Process \" << i << \" -> Not Allocated\\n\";\n    }\n}\n\nvoid nextFit(vector<int> blockSize, int m, vector<int> processSize, int n) {\n    vector<int> allocation(n, -1);\n\n    int j = 0;\n\n    for(int i=0;i<n;i++) {\n        int count = 0;\n\n        while(count < m) {\n            if(blockSize[j] >= processSize[i]) {\n                allocation[i] = j;\n                blockSize[j] -= processSize[i];\n                break;\n            }\n            j = (j + 1) % m;\n            count++;\n        }\n    }\n\n    cout << \"\\nNext Fit:\\n\";\n    for(int i=0;i<n;i++) {\n        if(allocation[i] != -1)\n            cout << \"Process \" << i << \" -> Block \" << allocation[i] << endl;\n        else\n            cout << \"Process \" << i << \" -> Not Allocated\\n\";\n    }\n}\n\nint main() {\n    int m, n;\n\n    cout << \"Enter number of memory blocks: \";\n    cin >> m;\n\n    vector<int> blockSize(m);\n    cout << \"Enter block sizes:\\n\";\n    for(int i=0;i<m;i++)\n        cin >> blockSize[i];\n\n    cout << \"Enter number of processes: \";\n    cin >> n;\n\n    vector<int> processSize(n);\n    cout << \"Enter process sizes:\\n\";\n    for(int i=0;i<n;i++)\n        cin >> processSize[i];\n\n    // Copy arrays for each algorithm\n    vector<int> b1 = blockSize;\n    vector<int> b2 = blockSize;\n    vector<int> b3 = blockSize;\n    vector<int> b4 = blockSize;\n\n    firstFit(b1, m, processSize, n);\n    bestFit(b2, m, processSize, n);\n    nextFit(b3, m, processSize, n);\n    worstFit(b4, m, processSize, n);\n\n    return 0;\n}"}, {"name": "producer_consumer_problem_ass4.cpp", "content": "#include <iostream>\n#include <thread>\n#include <mutex>\n#include <condition_variable>\n#include <queue>\n#include <vector>\n\nusing namespace std;\n\nconst int BUFFER_SIZE = 5;\nqueue<int> buffer;\n\nmutex mtx;\ncondition_variable cv;\n\nint item = 1; // shared item counter\n\nvoid producer(int id) {\n    for (int i = 0; i < 5; i++) {\n        unique_lock<mutex> lock(mtx);\n\n        cv.wait(lock, [] { return buffer.size() < BUFFER_SIZE; });\n\n        buffer.push(item);\n        cout << \"Producer \" << id << \" produced: \" << item << endl;\n        item++;\n\n        cv.notify_all();\n    }\n}\n\nvoid consumer(int id) {\n    for (int i = 0; i < 5; i++) {\n        unique_lock<mutex> lock(mtx);\n\n        cv.wait(lock, [] { return !buffer.empty(); });\n\n        int val = buffer.front();\n        buffer.pop();\n        cout << \"Consumer \" << id << \" consumed: \" << val << endl;\n\n        cv.notify_all();\n    }\n}\n\nint main() {\n    int p, c;\n\n    cout << \"Enter number of producers: \";\n    cin >> p;\n\n    cout << \"Enter number of consumers: \";\n    cin >> c;\n\n    vector<thread> producers, consumers;\n\n    // create producer threads\n    for (int i = 0; i < p; i++) {\n        producers.push_back(thread(producer, i + 1));\n    }\n\n    // create consumer threads\n    for (int i = 0; i < c; i++) {\n        consumers.push_back(thread(consumer, i + 1));\n    }\n\n    // join all threads\n    for (auto &t : producers) t.join();\n    for (auto &t : consumers) t.join();\n\n    return 0;\n}"}, {"name": "reader_writer_problem_ass3.cpp", "content": "#include <iostream>\n#include <thread>\n#include <mutex>\n#include <vector>\n#include <chrono>\n\nusing namespace std;\n\nint read_count = 0;\n\nmutex mtx;\nmutex wrt;           // replaces semaphore\nmutex print_mutex;\n\nvoid reader(int id) {\n\n    mtx.lock();\n    read_count++;\n\n    if (read_count == 1)\n        wrt.lock();   // first reader blocks writers\n\n    mtx.unlock();\n\n    // Critical section\n    print_mutex.lock();\n    cout << \"Reader \" << id << \" is reading\" << endl;\n    print_mutex.unlock();\n\n    this_thread::sleep_for(chrono::seconds(1));\n\n    mtx.lock();\n    read_count--;\n\n    if (read_count == 0)\n        wrt.unlock(); // last reader releases writer\n\n    mtx.unlock();\n}\n\nvoid writer(int id) {\n\n    wrt.lock();\n\n    print_mutex.lock();\n    cout << \"Writer \" << id << \" is writing\" << endl;\n    print_mutex.unlock();\n\n    this_thread::sleep_for(chrono::seconds(2));\n\n    wrt.unlock();\n}\n\nint main() {\n\n    int r, w;\n\n    cout << \"Enter number of Readers: \";\n    cin >> r;\n\n    cout << \"Enter number of Writers: \";\n    cin >> w;\n\n    vector<thread> readers, writers;\n\n    for (int i = 0; i < r; i++)\n        readers.push_back(thread(reader, i + 1));\n\n    for (int i = 0; i < w; i++)\n        writers.push_back(thread(writer, i + 1));\n\n    for (auto &t : readers)\n        t.join();\n\n    for (auto &t : writers)\n        t.join();\n\n    return 0;\n}"}, {"name": "scheduling_algo.cpp", "content": "#include<iostream>\nusing namespace std;\n\nstruct process{\n    int id, AT, BT, CT, TAT, WT, IT, priority, RT;\n};\n\n// ----------- FIXED INPUT -----------\nvoid insert_process(process p[], int n){\n    // Sample data (you can change)\n    int AT[] = {0,1,2,3};\n    int BT[] = {5,3,8,6};\n    int PR[] = {2,1,3,2};\n\n    for(int i=0;i<n;i++){\n        p[i].id = i+1;\n        p[i].AT = AT[i];\n        p[i].BT = BT[i];\n        p[i].priority = PR[i];\n        p[i].RT = BT[i];\n        p[i].IT = 0;\n    }\n}\n\n// -------- DISPLAY -----------\nvoid display(process p[], int n){\n    float total_TAT=0, total_WT=0, total_IT=0;\n\n    cout<<\"\\nP_ID\\tAT\\tBT\\tCT\\tTAT\\tWT\\tIT\\n\";\n    for(int i=0;i<n;i++){\n        cout<<p[i].id<<\"\\t\"<<p[i].AT<<\"\\t\"<<p[i].BT<<\"\\t\"\n            <<p[i].CT<<\"\\t\"<<p[i].TAT<<\"\\t\"<<p[i].WT<<\"\\t\"<<p[i].IT<<endl;\n\n        total_TAT+=p[i].TAT;\n        total_WT+=p[i].WT;\n        total_IT+=p[i].IT;\n    }\n\n    cout<<\"\\nAverage TAT: \"<<total_TAT/n;\n    cout<<\"\\nAverage WT: \"<<total_WT/n;\n    cout<<\"\\nAverage IT: \"<<total_IT/n<<endl;\n}\n\n// -------- FCFS -----------\nvoid fcfs(process p[], int n){\n    int time=0;\n\n    for(int i=0;i<n;i++){\n        if(time < p[i].AT){\n            p[i].IT = p[i].AT - time;\n            time = p[i].AT;\n        }\n\n        time += p[i].BT;\n        p[i].CT = time;\n        p[i].TAT = p[i].CT - p[i].AT;\n        p[i].WT = p[i].TAT - p[i].BT;\n    }\n\n    cout<<\"\\n--- FCFS ---\";\n    display(p,n);\n}\n\n// -------- SJF NON PREEMPTIVE -----------\nvoid sjf_non_preemptive(process p[], int n){\n    bool done[10]={0};\n    int time=0, completed=0;\n\n    while(completed<n){\n        int idx=-1, minBT=9999;\n\n        for(int i=0;i<n;i++){\n            if(p[i].AT<=time && !done[i] && p[i].BT<minBT){\n                minBT=p[i].BT;\n                idx=i;\n            }\n        }\n\n        if(idx==-1){\n            time++;\n            continue;\n        }\n\n        time += p[idx].BT;\n        p[idx].CT = time;\n        p[idx].TAT = p[idx].CT - p[idx].AT;\n        p[idx].WT = p[idx].TAT - p[idx].BT;\n\n        done[idx]=true;\n        completed++;\n    }\n\n    cout<<\"\\n--- SJF (Non-Preemptive) ---\";\n    display(p,n);\n}\n\n// -------- SJF PREEMPTIVE -----------\nvoid sjf_preemptive(process p[], int n){\n    int time=0, completed=0;\n\n    while(completed<n){\n        int idx=-1, minRT=9999;\n\n        for(int i=0;i<n;i++){\n            if(p[i].AT<=time && p[i].RT>0 && p[i].RT<minRT){\n                minRT=p[i].RT;\n                idx=i;\n            }\n        }\n\n        if(idx==-1){\n            time++;\n            continue;\n        }\n\n        p[idx].RT--;\n        time++;\n\n        if(p[idx].RT==0){\n            p[idx].CT=time;\n            p[idx].TAT=p[idx].CT-p[idx].AT;\n            p[idx].WT=p[idx].TAT-p[idx].BT;\n            completed++;\n        }\n    }\n\n    cout<<\"\\n--- SJF (Preemptive) ---\";\n    display(p,n);\n}\n\n// -------- ROUND ROBIN -----------\nvoid round_robin(process p[], int n){\n    int tq=2;\n    int time=0, completed=0;\n\n    while(completed<n){\n        bool executed=false;\n\n        for(int i=0;i<n;i++){\n            if(p[i].AT<=time && p[i].RT>0){\n                executed=true;\n\n                if(p[i].RT>tq){\n                    time += tq;\n                    p[i].RT -= tq;\n                }else{\n                    time += p[i].RT;\n                    p[i].RT=0;\n\n                    p[i].CT=time;\n                    p[i].TAT=p[i].CT-p[i].AT;\n                    p[i].WT=p[i].TAT-p[i].BT;\n                    completed++;\n                }\n            }\n        }\n\n        if(!executed) time++;\n    }\n\n    cout<<\"\\n--- Round Robin ---\";\n    display(p,n);\n}\n\n// -------- PRIORITY NON PREEMPTIVE -----------\nvoid priority_non_preemptive(process p[], int n){\n    bool done[10]={0};\n    int time=0, completed=0;\n\n    while(completed<n){\n        int idx=-1, best=9999;\n\n        for(int i=0;i<n;i++){\n            if(p[i].AT<=time && !done[i] && p[i].priority<best){\n                best=p[i].priority;\n                idx=i;\n            }\n        }\n\n        if(idx==-1){\n            time++;\n            continue;\n        }\n\n        time += p[idx].BT;\n        p[idx].CT=time;\n        p[idx].TAT=p[idx].CT-p[idx].AT;\n        p[idx].WT=p[idx].TAT-p[idx].BT;\n\n        done[idx]=true;\n        completed++;\n    }\n\n    cout<<\"\\n--- Priority (Non-Preemptive) ---\";\n    display(p,n);\n}\n\n// -------- PRIORITY PREEMPTIVE -----------\nvoid priority_preemptive(process p[], int n){\n    int time=0, completed=0;\n\n    while(completed<n){\n        int idx=-1, best=9999;\n\n        for(int i=0;i<n;i++){\n            if(p[i].AT<=time && p[i].RT>0 && p[i].priority<best){\n                best=p[i].priority;\n                idx=i;\n            }\n        }\n\n        if(idx==-1){\n            time++;\n            continue;\n        }\n\n        p[idx].RT--;\n        time++;\n\n        if(p[idx].RT==0){\n            p[idx].CT=time;\n            p[idx].TAT=p[idx].CT-p[idx].AT;\n            p[idx].WT=p[idx].TAT-p[idx].BT;\n            completed++;\n        }\n    }\n\n    cout<<\"\\n--- Priority (Preemptive) ---\";\n    display(p,n);\n}\n\n// -------- MAIN MENU -----------\nint main(){\n    int n=4, choice;\n\n    do{\n        process p[10];\n        insert_process(p,n);\n\n        cout<<\"\\n\\n===== CPU Scheduling Menu =====\";\n        cout<<\"\\n1. FCFS\";\n        cout<<\"\\n2. SJF (Non-Preemptive)\";\n        cout<<\"\\n3. SJF (Preemptive)\";\n        cout<<\"\\n4. Round Robin\";\n        cout<<\"\\n5. Priority (Non-Preemptive)\";\n        cout<<\"\\n6. Priority (Preemptive)\";\n        cout<<\"\\n0. Exit\";\n        cout<<\"\\nEnter choice: \";\n        cin>>choice;\n\n        switch(choice){\n            case 1: fcfs(p,n); break;\n            case 2: sjf_non_preemptive(p,n); break;\n            case 3: sjf_preemptive(p,n); break;\n            case 4: round_robin(p,n); break;\n            case 5: priority_non_preemptive(p,n); break;\n            case 6: priority_preemptive(p,n); break;\n        }\n\n    }while(choice!=0);\n\n    return 0;\n}"}, {"name": "virtualToPhysical_pagingAndSeg_ass12.cpp", "content": "#include <iostream>\nusing namespace std;\n\n// ---------------- PAGING ----------------\nvoid paging()\n{\n    int pageSize, logicalAddress;\n    int pageNumber, offset;\n    int frameNumber;\n\n    cout << \"\\n===== PAGING =====\\n\";\n\n    cout << \"Enter Page Size: \";\n    cin >> pageSize;\n\n    cout << \"Enter Logical Address: \";\n    cin >> logicalAddress;\n\n    // Calculate page number and offset\n    pageNumber = logicalAddress / pageSize;\n    offset = logicalAddress % pageSize;\n\n    cout << \"Page Number: \" << pageNumber << endl;\n    cout << \"Offset: \" << offset << endl;\n\n    // User provides frame number\n    cout << \"Enter Frame Number for Page \"\n         << pageNumber << \": \";\n    cin >> frameNumber;\n\n    int physicalAddress =\n        frameNumber * pageSize + offset;\n\n    cout << \"Physical Address: \"\n         << physicalAddress << endl;\n}\n\n// ---------------- SEGMENTATION ----------------\nvoid segmentation()\n{\n    int segmentNumber;\n    int offset;\n    int base, limit;\n\n    cout << \"\\n===== SEGMENTATION =====\\n\";\n\n    cout << \"Enter Segment Number: \";\n    cin >> segmentNumber;\n\n    cout << \"Enter Offset: \";\n    cin >> offset;\n\n    cout << \"Enter Base Address of Segment \"\n         << segmentNumber << \": \";\n    cin >> base;\n\n    cout << \"Enter Limit of Segment \"\n         << segmentNumber << \": \";\n    cin >> limit;\n\n    // Check validity\n    if (offset < limit)\n    {\n        int physicalAddress = base + offset;\n\n        cout << \"Physical Address: \"\n             << physicalAddress << endl;\n    }\n    else\n    {\n        cout << \"Segmentation Fault!\\n\";\n    }\n}\n\n// ---------------- MAIN ----------------\nint main()\n{\n    paging();\n\n    segmentation();\n\n    return 0;\n}"}];
+
+        function openModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('login-modal').style.display = 'none'; document.getElementById('error-msg').style.display = 'none'; }
+        
+        function login() {
+            const user = document.getElementById('userid').value;
+            const pass = document.getElementById('password').value;
+            if (user === '123' && pass === '321') {
+                document.getElementById('login-modal').style.display = 'none';
+                document.getElementById('landing-page').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'flex';
+                renderSidebar();
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        function renderSidebar() {
+            const list = document.getElementById('file-list');
+            filesData.forEach((file, index) => {
+                const link = document.createElement('a');
+                link.className = 'file-link';
+                link.innerText = file.name;
+                link.onclick = () => showCode(index);
+                list.appendChild(link);
+            });
+            if (filesData.length > 0) showCode(0);
+        }
+
+        function showCode(index) {
+            document.querySelectorAll('.file-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.file-link')[index].classList.add('active');
+            
+            document.getElementById('code-box').style.display = 'block';
+            document.getElementById('current-file-title').innerText = filesData[index].name;
+            document.getElementById('code-display').innerText = filesData[index].content;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('code-display').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerText = 'Copied!';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.innerText = 'Copy Code';
+                    btn.style.background = '#0033a0';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
